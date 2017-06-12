@@ -6,7 +6,6 @@
 
 [![travis build](https://img.shields.io/travis/vivocha/hands-free-chrome.svg)](https://travis-ci.org/vivocha/hands-free-chrome)
 [![Coverage Status](https://coveralls.io/repos/github/vivocha/hands-free-chrome/badge.svg?branch=master)](https://coveralls.io/github/vivocha/hands-free-chrome?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/vivocha/hands-free-chrome/badge.svg)](https://snyk.io/test/github/vivocha/hands-free-chrome)
 [![npm version](https://img.shields.io/npm/v/hands-free-chrome.svg)](https://www.npmjs.com/package/hands-free-chrome)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 

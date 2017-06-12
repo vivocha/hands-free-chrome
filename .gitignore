@@ -10,3 +10,5 @@ coverage
 typings
 
 dist
+*.pdf
+*.png
