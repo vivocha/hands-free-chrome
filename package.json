@@ -19,7 +19,7 @@
     "build": "tsc",
     "precommit": "npm run build && npm run cover && npm run check-coverage",
     "commit": "git-cz",
-    "check-coverage": "nyc check-coverage --statements 80 --branches 50 --functions 100 --lines 80",
+    "check-coverage": "nyc check-coverage --statements 80 --branches 50 --functions 80 --lines 80",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "watch:test": "npm t -- -w",
     "test": "mocha --no-timeouts test/*.test.js",
