@@ -13,8 +13,7 @@ notifications:
   email: false
 node_js:
   - '8'
-before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost
+before_install:  
   - npm i -g npm@^5.0.0
 before_script:
   - npm prune
