@@ -102,12 +102,12 @@ class HandsfreeChrome {
       //const { data: pdf } = await Page.printToPDF();
       //await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
       debug('all done.');
-      protocol.close();
+      if (protocol) protocol.close();
       this.launcher.kill();
       return filename;
     } catch (err) {
       debug(err);
-      protocol.close();
+      if (protocol) protocol.close();
       this.launcher.kill();
       throw err;
     }

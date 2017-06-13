@@ -23,6 +23,7 @@ describe('HandsFreeChrome', function () {
       return filename;
     });
   });
+  
   describe('#captureScreenshot', function () {
     let chrome;
     before('Instantiate HandsFreeChrome', function (done) {
