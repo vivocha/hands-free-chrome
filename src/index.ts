@@ -1,7 +1,8 @@
 const fs = require('fs');
 const url = require('url');
 const util = require('util');
-
+const http = require('http');
+const https = require('https');
 const debug = require('debug')('HFC:Main');
 const uuid = require('uuid');
 const lighthouse = require('lighthouse');
@@ -9,6 +10,34 @@ const chrome = require('chrome-remote-interface');
 const { Launcher } = require('lighthouse/chrome-launcher/chrome-launcher');
 
 const writeFile = util.promisify(fs.writeFile);
+
+
+process.on('unhandledRejection', (reason, p) => {
+  debug('Unhandled Rejection at:', p, 'REASON:', reason);
+});
+
+
+const get = (url) => new Promise((resolve, reject) => {
+  const request = http.get(url, (res) => {
+    const { statusCode } = res;
+    if (statusCode === 200) return resolve(statusCode);
+    else reject(statusCode);
+  });
+  request.on("error", function (error) {
+    reject(error);
+  });
+});
+
+const sget = (url) => new Promise((resolve, reject) => {
+  const request = https.get(url, (res) => {
+    const { statusCode } = res;
+    if (statusCode === 200) return resolve(statusCode);
+    else reject(statusCode);
+  });
+  request.on("error", function (error) {
+    reject(error);
+  });
+});
 
 interface Options {
   port: number,
@@ -50,8 +79,14 @@ class HandsfreeChrome {
   async captureScreenshot(url) {
     let protocol;
     let Page;
+    const request = url.startsWith('https:') ? sget : get;
+
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
+      const res = await request(url);
+      if (res !== 200) {
+        throw new Error('Unable to reach the specified page URL');
+      }
       await this.launchChrome();
       protocol = await chrome();
       Page = protocol.Page;
@@ -65,13 +100,14 @@ class HandsfreeChrome {
       const { data: pdf } = await Page.printToPDF();
       await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
       debug('all done.');
-    } catch (err) {
-      debug(err);
-      throw err;
-    } finally {
       if (protocol) protocol.close();
       this.launcher.kill();
       return filename;
+    } catch (err) {
+      debug(err);
+      if (protocol) protocol.close();
+      this.launcher.kill();
+      throw err;
     }
   };
 }
