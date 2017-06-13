@@ -16,7 +16,7 @@ process.on('unhandledRejection', (reason, p) => {
   debug('Unhandled Rejection at:', p, 'REASON:', reason);
 });
 
-
+/*
 const get = (url) => new Promise((resolve, reject) => {
   const request = http.get(url, (res) => {
     const { statusCode } = res;
@@ -38,6 +38,7 @@ const sget = (url) => new Promise((resolve, reject) => {
     reject(error);
   });
 });
+*/
 
 interface Options {
   port: number,
@@ -79,33 +80,34 @@ class HandsfreeChrome {
   async captureScreenshot(url) {
     let protocol;
     let Page;
-    const request = url.startsWith('https:') ? sget : get;
+    //const request = url.startsWith('https:') ? sget : get;
 
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
-      const res = await request(url);
-      if (res !== 200) {
-        throw new Error('Unable to reach the specified page URL');
-      }
+      //Too slow...
+      //const res = await request(url);
+      //if (res !== 200) {
+      //throw new Error('Unable to reach the specified page URL');
+      //}
       await this.launchChrome();
       protocol = await chrome();
       Page = protocol.Page;
       await Page.enable();
       await Page.navigate({ url: url });
       await Page.loadEventFired();
-      debug('Capturing a screenshot...');
+      // screenshot -> png
       let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
       await writeFile(`${filename}.png`, Buffer.from(data, 'base64'));
-      debug('generating a pdf...');
-      const { data: pdf } = await Page.printToPDF();
-      await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
+      // screenshot -> pdf
+      //const { data: pdf } = await Page.printToPDF();
+      //await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
       debug('all done.');
-      if (protocol) protocol.close();
+      protocol.close();
       this.launcher.kill();
       return filename;
     } catch (err) {
       debug(err);
-      if (protocol) protocol.close();
+      protocol.close();
       this.launcher.kill();
       throw err;
     }

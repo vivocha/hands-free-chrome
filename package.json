@@ -19,10 +19,10 @@
     "build": "tsc",
     "precommit": "npm run build && npm run cover && npm run check-coverage",
     "commit": "git-cz",
-    "check-coverage": "nyc check-coverage --statements 80 --branches 50 --functions 80 --lines 80",
+    "check-coverage": "nyc check-coverage --statements 70 --branches 30 --functions 70 --lines 70",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "watch:test": "npm t -- -w",
-    "test": "mocha --no-timeouts test/*.test.js",
+    "test": "mocha --timeout=60000 test/*.test.js",
     "cover": "nyc --reporter=lcov --reporter=text npm t",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
