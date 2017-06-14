@@ -22,7 +22,7 @@
     "check-coverage": "nyc check-coverage --statements 70 --branches 30 --functions 70 --lines 70",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "watch:test": "npm t -- -w",
-    "test": "mocha --timeout=90000 test/*.test.js",
+    "test": "DEBUG=HFC:Main mocha --timeout=90000 test/*.test.js",
     "cover": "nyc --reporter=lcov --reporter=text npm t",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },

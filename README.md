@@ -52,7 +52,7 @@ Capture a screenshot of a web page.
 Params:
 
 - `url` - string, a valid web page URL;
-- `outputType` - (optional) string, spscifies the output file type, can be: `png` (default), `pdf` or `both`;
+- `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
 
 
 ---

@@ -29,14 +29,8 @@ class HandsfreeChrome {
   launcher: any = null;
   protocol: any = null;
   constructor(opts: Options = { port: 9222, autoSelectChrome: true, chromeFlags: ['--disable-gpu', '--headless'] }) {
-    try {
-      this.launcher = new Launcher(opts);
-    } catch (err) {
-      debug(err);
-      throw err;
-    }
+    this.launcher = new Launcher(opts);
   }
-
   /**
    * Launches Chrome, if not already started.
    */
