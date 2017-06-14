@@ -1,8 +1,6 @@
 const fs = require('fs');
 const url = require('url');
 const util = require('util');
-const http = require('http');
-const https = require('https');
 const debug = require('debug')('HFC:Main');
 const uuid = require('uuid');
 const lighthouse = require('lighthouse');
@@ -10,7 +8,6 @@ const chrome = require('chrome-remote-interface');
 const { Launcher } = require('lighthouse/chrome-launcher/chrome-launcher');
 
 const writeFile = util.promisify(fs.writeFile);
-
 
 process.on('unhandledRejection', (reason, p) => {
   debug('Unhandled Rejection at:', p, 'REASON:', reason);
@@ -28,6 +25,7 @@ type OutType = 'png' | 'pdf' | 'both';
 class HandsfreeChrome {
   launcher: any = null;
   protocol: any = null;
+
   constructor(opts: Options = { port: 9222, autoSelectChrome: true, chromeFlags: ['--disable-gpu', '--headless'] }) {
     this.launcher = new Launcher(opts);
   }
@@ -78,7 +76,9 @@ class HandsfreeChrome {
       throw err;
     }
   };
-
+  /**
+   * Closes connections to Chrome and kills the launched Chrome process
+   */
   async close() {
     if (this.protocol) await this.protocol.close();
     if (this.launcher) await this.launcher.kill();
