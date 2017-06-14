@@ -16,30 +16,6 @@ process.on('unhandledRejection', (reason, p) => {
   debug('Unhandled Rejection at:', p, 'REASON:', reason);
 });
 
-/*
-const get = (url) => new Promise((resolve, reject) => {
-  const request = http.get(url, (res) => {
-    const { statusCode } = res;
-    if (statusCode === 200) return resolve(statusCode);
-    else reject(statusCode);
-  });
-  request.on("error", function (error) {
-    reject(error);
-  });
-});
-
-const sget = (url) => new Promise((resolve, reject) => {
-  const request = https.get(url, (res) => {
-    const { statusCode } = res;
-    if (statusCode === 200) return resolve(statusCode);
-    else reject(statusCode);
-  });
-  request.on("error", function (error) {
-    reject(error);
-  });
-});
-*/
-
 interface Options {
   port: number,
   autoSelectChrome: boolean,
@@ -79,17 +55,10 @@ class HandsfreeChrome {
    * @returns {Promise} - resolved to filename string, in case of success.
    */
   async captureScreenshot(url) {
-   
-    let Page;
-    //const request = url.startsWith('https:') ? sget : get;
 
+    let Page;
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
-      //Too slow...
-      //const res = await request(url);
-      //if (res !== 200) {
-      //throw new Error('Unable to reach the specified page URL');
-      //}
       if (!this.launcher.chrome) await this.launchChrome();
       if (!this.protocol) this.protocol = await chrome();
       Page = this.protocol.Page;
@@ -102,21 +71,17 @@ class HandsfreeChrome {
       // screenshot -> pdf
       //const { data: pdf } = await Page.printToPDF();
       //await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
-      debug('all done.');
-      //if (protocol) protocol.close();
-      //this.launcher.kill();
+      debug('all done.');      
       return filename;
     } catch (err) {
       debug(err);
-      //if (protocol) protocol.close();
-      //this.launcher.kill();
       throw err;
     }
   };
 
-  async close(){
-    if(this.protocol) await this.protocol.close();
-    if(this.launcher) await this.launcher.kill();
+  async close() {
+    if (this.protocol) await this.protocol.close();
+    if (this.launcher) await this.launcher.kill();
   }
 }
 
