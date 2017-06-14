@@ -60,10 +60,10 @@ describe('HandsFreeChrome', function () {
 });
 
 
-describe('#captureScreenshot with no autodetect', function () {
+describe.skip('#captureScreenshot with no autodetect', function () {
   let chrome;
   before('Instantiate HandsFreeChrome', function (done) {
-    chrome = new HandsFreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/temp', chromeFlags: ['--disable-gpu', '--headless'] });
+    chrome = new HandsFreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/tmp', chromeFlags: ['--disable-gpu', '--headless'] });
     done();
   });
 
