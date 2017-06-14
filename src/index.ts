@@ -48,7 +48,8 @@ interface Options {
 }
 
 class HandsfreeChrome {
-  launcher: any;
+  launcher: any = null;
+  protocol: any = null;
   constructor(opts: Options = { port: 9222, autoSelectChrome: true, chromeFlags: ['--disable-gpu', '--headless'] }) {
     try {
       this.launcher = new Launcher(opts);
@@ -78,7 +79,7 @@ class HandsfreeChrome {
    * @returns {Promise} - resolved to filename string, in case of success.
    */
   async captureScreenshot(url) {
-    let protocol;
+   
     let Page;
     //const request = url.startsWith('https:') ? sget : get;
 
@@ -89,9 +90,9 @@ class HandsfreeChrome {
       //if (res !== 200) {
       //throw new Error('Unable to reach the specified page URL');
       //}
-      await this.launchChrome();
-      protocol = await chrome();
-      Page = protocol.Page;
+      if (!this.launcher.chrome) await this.launchChrome();
+      if (!this.protocol) this.protocol = await chrome();
+      Page = this.protocol.Page;
       await Page.enable();
       await Page.navigate({ url: url });
       await Page.loadEventFired();
@@ -102,16 +103,21 @@ class HandsfreeChrome {
       //const { data: pdf } = await Page.printToPDF();
       //await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
       debug('all done.');
-      if (protocol) protocol.close();
-      this.launcher.kill();
+      //if (protocol) protocol.close();
+      //this.launcher.kill();
       return filename;
     } catch (err) {
       debug(err);
-      if (protocol) protocol.close();
-      this.launcher.kill();
+      //if (protocol) protocol.close();
+      //this.launcher.kill();
       throw err;
     }
   };
+
+  async close(){
+    if(this.protocol) await this.protocol.close();
+    if(this.launcher) await this.launcher.kill();
+  }
 }
 
 module.exports = HandsfreeChrome;
