@@ -9,15 +9,51 @@ const HandsFreeChrome = require('../dist/index.js');
 
 describe('HandsFreeChrome', function () {
 
-  describe('#captureScreenshot', function () {
+  describe('#captureScreenshot(png default)', function () {
     let chrome;
     before('Instantiate HandsFreeChrome', function (done) {
       chrome = new HandsFreeChrome();
       done();
     });
 
-    it('should create two not empty files wikipedia JS page', async function () {
+    it('should create one not empty png file wikipedia JS page', async function () {
       let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript');
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    after('Close HandsFreeChrome ', function () {
+      return chrome.close();
+    });
+  });
+
+  describe('#captureScreenshot (pdf)', function () {
+    let chrome;
+    before('Instantiate HandsFreeChrome', function (done) {
+      chrome = new HandsFreeChrome();
+      done();
+    });
+
+    it('should create one not empty pdf file wikipedia JS page', async function () {
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', 'pdf');
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    after('Close HandsFreeChrome ', function () {
+      return chrome.close();
+    });
+  });
+
+  describe('#captureScreenshot (both pdf and png)', function () {
+    let chrome;
+    before('Instantiate HandsFreeChrome', function (done) {
+      chrome = new HandsFreeChrome();
+      done();
+    });
+
+    it('should create two files wikipedia JS page', async function () {
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', 'both');
       filename.should.be.ok;
       filename.length.should.be.above(1);
       return filename;

@@ -23,6 +23,8 @@ interface Options {
   chromePath?: string
 }
 
+type OutType = 'png' | 'pdf' | 'both';
+
 class HandsfreeChrome {
   launcher: any = null;
   protocol: any = null;
@@ -50,12 +52,12 @@ class HandsfreeChrome {
 
   /**
    * Captures a screenshot of the page at specified URL.
-   * It generates two files: a png image and a pdf document.
+   * It can generate two files: a png image and|or a pdf document.
    * @param {string} url - complete URL of the webpage to take a screenshot
+   * @param {string} outputType - file format for the ouput file, can be 'png', 'pdf' or 'both'
    * @returns {Promise} - resolved to filename string, in case of success.
    */
-  async captureScreenshot(url) {
-
+  async captureScreenshot(url: string, outputType: OutType = 'png') {
     let Page;
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
@@ -66,12 +68,16 @@ class HandsfreeChrome {
       await Page.navigate({ url: url });
       await Page.loadEventFired();
       // screenshot -> png
-      let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
-      await writeFile(`${filename}.png`, Buffer.from(data, 'base64'));
+      if (outputType === 'png' || outputType === 'both') {
+        let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
+        await writeFile(`${filename}.png`, Buffer.from(data, 'base64'));
+      }
       // screenshot -> pdf
-      //const { data: pdf } = await Page.printToPDF();
-      //await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
-      debug('all done.');      
+      if (outputType === 'pdf' || outputType === 'both') {
+        const { data: pdf } = await Page.printToPDF();
+        await writeFile(`${filename}.pdf`, Buffer.from(pdf, 'base64'));
+      }
+      debug('all done.');
       return filename;
     } catch (err) {
       debug(err);

@@ -10,7 +10,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 Current supported features:
-- capture screenshots of web pages, generating png files.
+- capture screenshots of web pages, generating png and/or pdf files.
 
 
 
@@ -35,10 +35,25 @@ then:
 const HandsFreeChrome = require('hands-free-chrome');
 
 let chrome = new HandsFreeChrome();
+
+//capture a screenshot as png
 chrome.captureScreenshot('<A VALID WEB PAGE URL>')
   .then(name => console.log(`Created file: ${name}.png`))
   .catch(err => console.log(err));
 ```
+___
+
+## API
+
+**`HandsFreeChrome # captureScreenshot(url, outputType)`**
+
+Capture a screenshot of a web page.
+
+Params:
+
+- `url` - string, a valid web page URL;
+- `outputType` - (optional) string, spscifies the output file type, can be: `png` (default), `pdf` or `both`;
+
 
 ---
 
