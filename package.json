@@ -33,7 +33,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    ".npmrc"
   ],
   "dependencies": {
     "chrome-remote-interface": "^0.23.2",
