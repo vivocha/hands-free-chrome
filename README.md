@@ -47,7 +47,7 @@ ___
 
 **`HandsFreeChrome # captureScreenshot(url, outputType)`**
 
-Capture a screenshot of a web page.
+Capture a screenshot of a web page and create image files.
 
 Params:
 
@@ -55,6 +55,14 @@ Params:
 - `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
 
 
+**`HandsFreeChrome # captureScreenshotAsStream(url, outputType)`**
+
+Capture a screenshot of a web page and return a data readable stream.
+
+Params:
+
+- `url` - string, a valid web page URL;
+- `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
 ---
 
 

@@ -95,6 +95,44 @@ describe('HandsFreeChrome', function () {
 
 });
 
+//Streams
+describe('#captureScreenshotAsStream', function () {
+  let chrome;
+  before('Instantiate HandsFreeChrome', function (done) {
+    chrome = new HandsFreeChrome();
+    done();
+  });
+  it('should create a stream for Chromestatus', async function () {
+    let stream = chrome.captureScreenshotAsStream('https://www.chromestatus.com/');
+    stream.should.be.fulfilled;
+    let screenshotData = '';
+    const dataStream = await stream;
+    dataStream.on('data', chunk => {
+      screenshotData += chunk;
+    });
+    dataStream.on('end', () => {
+      screenshotData.length.should.be.above(0);
+      return;
+    });
+  });
+
+  it('should create a stream', async function () {
+    let stream = chrome.captureScreenshotAsStream('https://it.wikipedia.org/wiki/Bug');
+    stream.should.be.fulfilled;
+    let screenshotData = '';
+    const dataStream = await stream;
+    dataStream.on('data', chunk => {
+      screenshotData += chunk;
+    });
+    dataStream.on('end', () => {
+      screenshotData.length.should.be.above(0);
+      return;
+    });
+  });
+  after('Close HandsFreeChrome ', function () {
+    return chrome.close();
+  });
+});
 
 describe.skip('#captureScreenshot with no autodetect', function () {
   let chrome;
