@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+</head>
+
+<body>
+  <div id='main'></div>
+
+  <script>
+    function loadPNG(url) {
+      const body = {
+        url: url,
+        type: 'png'
+      };
+      $.post('/screenshots/actions/capture', body, (data, status) => {
+        console.log('Status:', status);
+        //$('#main').html('<p>OK</p>');
+        $('#main').html('<img src="data:image/png;base64,' + data + '"/>');
+      })
+        .fail(function (q,text,error) {
+         console.log(text,error);
+        });
+
+    };
+
+    $(document).ready(function () {
+      console.log('loading image...');
+      loadPNG('https://en.wikipedia.org/wiki/Node.js');
+    });
+  </script>
+</body>
+
+</html>

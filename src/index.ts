@@ -14,18 +14,18 @@ process.on('unhandledRejection', (reason, p) => {
   debug('Unhandled Rejection at:', p, 'REASON:', reason);
 });
 
-interface Options {
+export interface Options {
   port: number,
   autoSelectChrome: boolean,
   chromeFlags: string[],
   chromePath?: string
 }
 
-type OutType = 'png' | 'pdf';
-type ExtOutType = OutType | 'both';
+export type OutType = 'png' | 'pdf';
+export type ExtOutType = OutType | 'both';
 
 
-class HandsfreeChrome {
+export class HandsfreeChrome {
   launcher: any = null;
   protocol: any = null;
 
@@ -64,13 +64,13 @@ class HandsfreeChrome {
       await Page.loadEventFired();
       // screenshot -> png
       if (outputType === 'png' || outputType === 'both') {
-        const writeStream = fs.createWriteStream(`${filename}.png`, {encoding: 'base64'});
+        const writeStream = fs.createWriteStream(`${filename}.png`, { encoding: 'base64' });
         (await this.captureScreenshotAsStream(url)).pipe(writeStream);
-       
+
       }
       // screenshot -> pdf
       if (outputType === 'pdf' || outputType === 'both') {
-        const writeStream = fs.createWriteStream(`${filename}.pdf`, {encoding: 'base64'});
+        const writeStream = fs.createWriteStream(`${filename}.pdf`, { encoding: 'base64' });
         (await this.captureScreenshotAsStream(url, 'pdf')).pipe(writeStream);
       }
       debug('all done.');
@@ -89,7 +89,7 @@ class HandsfreeChrome {
    */
   async captureScreenshotAsStream(url: string, outputType: OutType = 'png'): Promise<Readable> {
     let Page;
-    const stream: Readable = new Readable({encoding: 'base64'});
+    const stream: Readable = new Readable({ encoding: 'base64' });
     try {
       if (!this.launcher.chrome) await this.launchChrome();
       if (!this.protocol) this.protocol = await chrome();
@@ -101,13 +101,13 @@ class HandsfreeChrome {
       if (outputType === 'png') {
         let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
         stream.push(data.split(';base64,').pop(), 'base64');
-        stream.push(null);        
+        stream.push(null);
       }
       // screenshot -> pdf
       else if (outputType === 'pdf') {
         const { data: pdf } = await Page.printToPDF();
         stream.push(pdf.split(';base64,').pop(), 'base64');
-        stream.push(null);        
+        stream.push(null);
       }
       debug('all done.');
       return stream;
@@ -119,10 +119,10 @@ class HandsfreeChrome {
   /**
    * Closes connections to Chrome and kills the launched Chrome process
    */
-  private async close() {
+  async close() {
     if (this.protocol) await this.protocol.close();
     if (this.launcher) await this.launcher.kill();
+    return true;
   }
 }
 
-module.exports = HandsfreeChrome;

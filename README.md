@@ -66,6 +66,48 @@ Params:
 ---
 
 
+
+
+## Web API Server
+A Web API Server is now included in the package in order to expose the lib as Microservice.
+
+Running:
+
+```
+node api
+```
+
+it starts a HTTP server at localhost, port: 8000.
+To start the server listening to a different port, just set the `PORT` environment variable.
+
+Example:
+
+```
+PORT=8080 node api
+```
+### Endpoints
+
+**POST /screenshots/actions/capture**
+
+Sends a request to capture a screenshot.
+It returns a response with a base64 encoded stream body with `Content-Type` equal to `image/png` or `application/pdf`.
+
+POST body must be a JSON object with the following properties:
+
+- `url`: string, complete URL of the page to capture;
+- `type`: (Optional) string, image type for the requested screenshot: `png` or `pdf` (default is `png`);
+
+Example:
+
+```js
+{
+  "url": "https://en.wikipedia.org/wiki/Node.js",
+  "type": "png"
+}
+```
+
+---
+
 License - "MIT License"
 -----------------------
 

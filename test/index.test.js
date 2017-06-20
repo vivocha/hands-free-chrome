@@ -4,15 +4,15 @@ var chaiAsPromised = require("chai-as-promised");
 
 chai.use(chaiAsPromised);
 
-const HandsFreeChrome = require('../dist/index.js');
+const {HandsfreeChrome} = require('../dist/index');
 
 
-describe('HandsFreeChrome', function () {
+describe('HandsfreeChrome', function () {
 
   describe('#captureScreenshot(png default)', function () {
     let chrome;
-    before('Instantiate HandsFreeChrome', function (done) {
-      chrome = new HandsFreeChrome();
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
       done();
     });
 
@@ -22,15 +22,15 @@ describe('HandsFreeChrome', function () {
       filename.length.should.be.above(1);
       return filename;
     });
-    after('Close HandsFreeChrome ', function () {
+    after('Close HandsfreeChrome ', function () {
       return chrome.close();
     });
   });
 
   describe('#captureScreenshot (pdf)', function () {
     let chrome;
-    before('Instantiate HandsFreeChrome', function (done) {
-      chrome = new HandsFreeChrome();
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
       done();
     });
 
@@ -40,15 +40,15 @@ describe('HandsFreeChrome', function () {
       filename.length.should.be.above(1);
       return filename;
     });
-    after('Close HandsFreeChrome ', function () {
+    after('Close HandsfreeChrome ', function () {
       return chrome.close();
     });
   });
 
   describe('#captureScreenshot (both pdf and png)', function () {
     let chrome;
-    before('Instantiate HandsFreeChrome', function (done) {
-      chrome = new HandsFreeChrome();
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
       done();
     });
 
@@ -58,7 +58,7 @@ describe('HandsFreeChrome', function () {
       filename.length.should.be.above(1);
       return filename;
     });
-    after('Close HandsFreeChrome ', function () {
+    after('Close HandsfreeChrome ', function () {
       return chrome.close();
     });
   });
@@ -66,8 +66,8 @@ describe('HandsFreeChrome', function () {
 
   describe('#captureScreenshot', function () {
     let chrome;
-    before('Instantiate HandsFreeChrome', function (done) {
-      chrome = new HandsFreeChrome();
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
       done();
     });
     it('should create two not empty files for CHROME page', async function () {
@@ -83,7 +83,7 @@ describe('HandsFreeChrome', function () {
       filename.length.should.be.above(1);
       return filename;
     });
-    after('Close HandsFreeChrome ', function () {
+    after('Close HandsfreeChrome ', function () {
       return chrome.close();
     });
     /*
@@ -98,8 +98,8 @@ describe('HandsFreeChrome', function () {
 //Streams
 describe('#captureScreenshotAsStream', function () {
   let chrome;
-  before('Instantiate HandsFreeChrome', function (done) {
-    chrome = new HandsFreeChrome();
+  before('Instantiate HandsfreeChrome', function (done) {
+    chrome = new HandsfreeChrome();
     done();
   });
   it('should create a stream for Chromestatus', async function () {
@@ -129,15 +129,15 @@ describe('#captureScreenshotAsStream', function () {
       return;
     });
   });
-  after('Close HandsFreeChrome ', function () {
+  after('Close HandsfreeChrome ', function () {
     return chrome.close();
   });
 });
 
 describe.skip('#captureScreenshot with no autodetect', function () {
   let chrome;
-  before('Instantiate HandsFreeChrome', function (done) {
-    chrome = new HandsFreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/tmp', chromeFlags: ['--disable-gpu', '--headless'] });
+  before('Instantiate HandsfreeChrome', function (done) {
+    chrome = new HandsfreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/tmp', chromeFlags: ['--disable-gpu', '--headless'] });
     done();
   });
 
@@ -145,7 +145,7 @@ describe.skip('#captureScreenshot with no autodetect', function () {
     chrome.captureScreenshot('https://en.wikipedia.org/wiki/Node.js').should.be.rejected;
     return;
   });
-  after('Close HandsFreeChrome ', function () {
+  after('Close HandsfreeChrome ', function () {
     return chrome.close();
   });
 });
