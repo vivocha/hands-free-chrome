@@ -32,9 +32,9 @@ $ npm install hands-free-chrome
 then:
 
 ```js
-const HandsFreeChrome = require('hands-free-chrome');
+const HandsfreeChrome = require('hands-free-chrome');
 
-let chrome = new HandsFreeChrome();
+let chrome = new HandsfreeChrome();
 
 //capture a screenshot as png
 chrome.captureScreenshot('<A VALID WEB PAGE URL>')
@@ -45,7 +45,7 @@ ___
 
 ## API
 
-**`new HandsFreeChrome( [options] )`**
+**`new HandsfreeChrome( [options] )`**
 
 Constructor.
 
@@ -58,7 +58,7 @@ Instantiate a new HandsFreeChrome.
 - `chromeFlags` -  array of strings, Headless Chrome configuration, default: `['--disable-gpu', '--headless']`;
 
 
-**`HandsFreeChrome # captureScreenshot(url, outputType)`**
+**`HandsfreeChrome # captureScreenshot(url, outputType)`**
 
 Capture a screenshot of a web page and create image files.
 
@@ -68,7 +68,7 @@ Params:
 - `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
 
 
-**`HandsFreeChrome # captureScreenshotAsStream(url, outputType)`**
+**`HandsfreeChrome # captureScreenshotAsStream(url, outputType)`**
 
 Capture a screenshot of a web page and return a data readable stream.
 
