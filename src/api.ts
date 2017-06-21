@@ -40,14 +40,14 @@ const captureConfig = {
         }
     }
 }
-// Add the route
+// Add the route for the captureScreenshot API endpoint
 server.route({
     method: 'POST',
     path: '/screenshots/actions/capture',
     config: captureConfig
 });
 
-// close chrome instance when API server is in stop state
+
 server.on('stop', function () {
     console.log('closing server');
 });
@@ -63,6 +63,7 @@ server.start((err) => {
     }
 });
 
+// stop Chrome process and API server.
 export async function stop() {
     await chrome.close();
     server.stop();

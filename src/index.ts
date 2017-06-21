@@ -19,11 +19,9 @@ export interface Options {
   autoSelectChrome: boolean,
   chromeFlags: string[],
   chromePath?: string
-}
-
+};
 export type OutType = 'png' | 'pdf';
 export type ExtOutType = OutType | 'both';
-
 
 export class HandsfreeChrome {
   launcher: any = null;
@@ -54,7 +52,7 @@ export class HandsfreeChrome {
    * @param {string} outputType - file format for the ouput file, can be 'png', 'pdf' or 'both'
    * @returns {Promise} - resolved to filename string, in case of success.
    */
-  async captureScreenshot(url: string, outputType: ExtOutType = 'png'): Promise<string> {   
+  async captureScreenshot(url: string, outputType: ExtOutType = 'png'): Promise<string> {
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
       // screenshot -> png
@@ -86,7 +84,7 @@ export class HandsfreeChrome {
     const stream: Readable = new Readable({ encoding: 'base64' });
     try {
       if (!this.launcher.chrome) await this.launchChrome();
-      if (!this.protocol) this.protocol = await chrome({port: this.options.port || 9222});
+      if (!this.protocol) this.protocol = await chrome({ port: this.options.port || 9222 });
       Page = this.protocol.Page;
       await Page.enable();
       await Page.navigate({ url: url });

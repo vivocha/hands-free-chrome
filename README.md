@@ -84,17 +84,17 @@ Params:
 ## Web API Server
 A Web API Server is now included in the package in order to expose the lib as Microservice.
 
-Running:
+After installing the npm package, running:
 
 ```sh
-$ node api
+$ node ./node_modules/hands-free-chrome/dist/api
 ```
 
-It starts a HTTP server at localhost, default port: 8000.
+it starts a HTTP server at `localhost`, default port: `8000`.
 
 To start the API server listening at a different port, just set the `PORT` environment variable.
 
-To start the underlying Headless Chrome instance at a different port, set the `CHROME_PORT` environment variable (default is 9222).
+To start the underlying Headless Chrome instance at a different port, set the `CHROME_PORT` environment variable (default is `9222`).
 
 
 Example:
