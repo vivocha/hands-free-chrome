@@ -26,8 +26,8 @@ Current supported features:
 ---
 ## Quick Start
 
-```
-npm install hands-free-chrome
+```sh
+$ npm install hands-free-chrome
 ```
 then:
 
@@ -73,8 +73,8 @@ A Web API Server is now included in the package in order to expose the lib as Mi
 
 Running:
 
-```
-node api
+```sh
+$ node api
 ```
 
 it starts a HTTP server at localhost, port: 8000.
@@ -82,8 +82,8 @@ To start the server listening to a different port, just set the `PORT` environme
 
 Example:
 
-```
-PORT=8080 node api
+```sh
+$ PORT=8080 node api
 ```
 ### Endpoints
 
