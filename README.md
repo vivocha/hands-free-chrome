@@ -100,7 +100,7 @@ To start the underlying Headless Chrome instance at a different port, set the `C
 Example:
 
 ```sh
-$ PORT=8080 node api
+$ PORT=8080 node ./node_modules/hands-free-chrome/dist/api
 ```
 ### Endpoints
 
