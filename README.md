@@ -45,6 +45,19 @@ ___
 
 ## API
 
+**`new HandsFreeChrome( [options] )`**
+
+Constructor.
+
+Instantiate a new HandsFreeChrome.
+
+`options` is an *optional* object with the following properties:
+
+- `port` -  integer, Headless Chrome listening port, default: `9999`;
+- `autoSelectChrome` -  boolean, enable/disable autoselection of installed Chrome, default: `true` (recommended);
+- `chromeFlags` -  array of strings, Headless Chrome configuration, default: `['--disable-gpu', '--headless']`;
+
+
 **`HandsFreeChrome # captureScreenshot(url, outputType)`**
 
 Capture a screenshot of a web page and create image files.
@@ -77,8 +90,12 @@ Running:
 $ node api
 ```
 
-it starts a HTTP server at localhost, port: 8000.
-To start the server listening to a different port, just set the `PORT` environment variable.
+It starts a HTTP server at localhost, default port: 8000.
+
+To start the API server listening at a different port, just set the `PORT` environment variable.
+
+To start the underlying Headless Chrome instance at a different port, set the `CHROME_PORT` environment variable (default is 9222).
+
 
 Example:
 

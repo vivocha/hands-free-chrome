@@ -28,8 +28,10 @@ export type ExtOutType = OutType | 'both';
 export class HandsfreeChrome {
   launcher: any = null;
   protocol: any = null;
+  options: Options;
 
   constructor(opts: Options = { port: 9222, autoSelectChrome: true, chromeFlags: ['--disable-gpu', '--headless'] }) {
+    this.options = opts;
     this.launcher = new Launcher(opts);
   }
   /**
@@ -52,21 +54,13 @@ export class HandsfreeChrome {
    * @param {string} outputType - file format for the ouput file, can be 'png', 'pdf' or 'both'
    * @returns {Promise} - resolved to filename string, in case of success.
    */
-  async captureScreenshot(url: string, outputType: ExtOutType = 'png'): Promise<string> {
-    let Page;
+  async captureScreenshot(url: string, outputType: ExtOutType = 'png'): Promise<string> {   
     const filename = `${uuid.v4()}-${new Date().toISOString()}`;
     try {
-      if (!this.launcher.chrome) await this.launchChrome();
-      if (!this.protocol) this.protocol = await chrome();
-      Page = this.protocol.Page;
-      await Page.enable();
-      await Page.navigate({ url: url });
-      await Page.loadEventFired();
       // screenshot -> png
       if (outputType === 'png' || outputType === 'both') {
         const writeStream = fs.createWriteStream(`${filename}.png`, { encoding: 'base64' });
         (await this.captureScreenshotAsStream(url)).pipe(writeStream);
-
       }
       // screenshot -> pdf
       if (outputType === 'pdf' || outputType === 'both') {
@@ -92,7 +86,7 @@ export class HandsfreeChrome {
     const stream: Readable = new Readable({ encoding: 'base64' });
     try {
       if (!this.launcher.chrome) await this.launchChrome();
-      if (!this.protocol) this.protocol = await chrome();
+      if (!this.protocol) this.protocol = await chrome({port: this.options.port || 9222});
       Page = this.protocol.Page;
       await Page.enable();
       await Page.navigate({ url: url });

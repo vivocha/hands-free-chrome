@@ -4,11 +4,10 @@ var chaiAsPromised = require("chai-as-promised");
 
 chai.use(chaiAsPromised);
 
-const {HandsfreeChrome} = require('../dist/index');
+const { HandsfreeChrome } = require('../dist/index');
 
 
 describe('HandsfreeChrome', function () {
-
   describe('#captureScreenshot(png default)', function () {
     let chrome;
     before('Instantiate HandsfreeChrome', function (done) {
@@ -93,62 +92,88 @@ describe('HandsfreeChrome', function () {
     */
   });
 
-});
+  describe('#captureScreenshot(png default) setting a different port', function () {
+    let chrome;
+    const hfcOptions = {
+      port: 9999,
+      autoSelectChrome: true,
+      chromeFlags: ['--disable-gpu', '--headless']
+    };
 
-//Streams
-describe('#captureScreenshotAsStream', function () {
-  let chrome;
-  before('Instantiate HandsfreeChrome', function (done) {
-    chrome = new HandsfreeChrome();
-    done();
-  });
-  it('should create a stream for Chromestatus', async function () {
-    let stream = chrome.captureScreenshotAsStream('https://www.chromestatus.com/');
-    stream.should.be.fulfilled;
-    let screenshotData = '';
-    const dataStream = await stream;
-    dataStream.on('data', chunk => {
-      screenshotData += chunk;
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome(hfcOptions);
+      done();
     });
-    dataStream.on('end', () => {
-      screenshotData.length.should.be.above(0);
+
+    it('should create one not empty png file wikipedia JS page', async function () {
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript');
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    after('Close HandsfreeChrome ', function () {
+      return chrome.close();
+    });
+  });
+
+  //Streams
+  describe('#captureScreenshotAsStream', function () {
+    let chrome;
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
+      done();
+    });
+    it('should create a stream for Chromestatus', async function () {
+      let stream = chrome.captureScreenshotAsStream('https://www.chromestatus.com/');
+      stream.should.be.fulfilled;
+      let screenshotData = '';
+      const dataStream = await stream;
+      dataStream.on('data', chunk => {
+        screenshotData += chunk;
+      });
+      dataStream.on('end', () => {
+        screenshotData.length.should.be.above(0);
+        return;
+      });
+    });
+
+    it('should create a stream', async function () {
+      let stream = chrome.captureScreenshotAsStream('https://it.wikipedia.org/wiki/Bug');
+      stream.should.be.fulfilled;
+      let screenshotData = '';
+      const dataStream = await stream;
+      dataStream.on('data', chunk => {
+        screenshotData += chunk;
+      });
+      dataStream.on('end', () => {
+        screenshotData.length.should.be.above(0);
+        return;
+      });
+    });
+    after('Close HandsfreeChrome ', function () {
+      return chrome.close();
+    });
+  });
+
+  describe.skip('#captureScreenshot with no autodetect', function () {
+    let chrome;
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/tmp', chromeFlags: ['--disable-gpu', '--headless'] });
+      done();
+    });
+
+    it('should fail', async function () {
+      chrome.captureScreenshot('https://en.wikipedia.org/wiki/Node.js').should.be.rejected;
       return;
     });
-  });
-
-  it('should create a stream', async function () {
-    let stream = chrome.captureScreenshotAsStream('https://it.wikipedia.org/wiki/Bug');
-    stream.should.be.fulfilled;
-    let screenshotData = '';
-    const dataStream = await stream;
-    dataStream.on('data', chunk => {
-      screenshotData += chunk;
-    });
-    dataStream.on('end', () => {
-      screenshotData.length.should.be.above(0);
-      return;
+    after('Close HandsfreeChrome ', function () {
+      return chrome.close();
     });
   });
-  after('Close HandsfreeChrome ', function () {
-    return chrome.close();
-  });
+
 });
 
-describe.skip('#captureScreenshot with no autodetect', function () {
-  let chrome;
-  before('Instantiate HandsfreeChrome', function (done) {
-    chrome = new HandsfreeChrome({ autoSelectChrome: false, port: 9222, chromePath: '/tmp', chromeFlags: ['--disable-gpu', '--headless'] });
-    done();
-  });
 
-  it('should fail', async function () {
-    chrome.captureScreenshot('https://en.wikipedia.org/wiki/Node.js').should.be.rejected;
-    return;
-  });
-  after('Close HandsfreeChrome ', function () {
-    return chrome.close();
-  });
-});
 
 
 

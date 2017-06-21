@@ -10,7 +10,13 @@ server.connection({
     port: process.env.PORT || 8000
 });
 
-const chrome = new HandsfreeChrome();
+const hfcOptions = {
+    port: process.env.CHROME_PORT || 9222,
+    autoSelectChrome: true,
+    chromeFlags: ['--disable-gpu', '--headless']
+};
+
+const chrome = new HandsfreeChrome(hfcOptions);
 
 const captureScreenshotHandler = async function (request, reply) {
     try {
