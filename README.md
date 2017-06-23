@@ -57,8 +57,8 @@ Instantiate a new HandsFreeChrome.
 - `autoSelectChrome` -  boolean, enable/disable autoselection of installed Chrome, default: `true` (recommended);
 - `chromeFlags` -  array of strings, Headless Chrome configuration, default: `['--disable-gpu', '--headless']`;
 
-
-**`HandsfreeChrome # captureScreenshot(url, outputType)`**
+---
+**`HandsfreeChrome # captureScreenshot(url, outputType, metrics, [thumbnail])`**
 
 Capture a screenshot of a web page and create image files.
 
@@ -66,9 +66,11 @@ Params:
 
 - `url` - string, a valid web page URL;
 - `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
+- `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below;
+- `thumbnail` - (optional) object `{ width: <px>, height: <px> }`, if used produces a resized png of the screenshot of the specified dimensions. Works only if `outputType` is `png`.
 
-
-**`HandsfreeChrome # captureScreenshotAsStream(url, outputType)`**
+---
+**`HandsfreeChrome # captureScreenshotAsStream(url, outputType, metrics)`**
 
 Capture a screenshot of a web page and return a data readable stream.
 
@@ -76,11 +78,36 @@ Params:
 
 - `url` - string, a valid web page URL;
 - `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
+- `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
 ---
 
+### Metrics Object
+
+Metrics Object specifies some configuration options for Headless Chrome, like the browser window size, mobile emulation and so on. See [Chrome DevTools Protocol page](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) for more info.
+
+Supported params are: 
+```js
+  width: number;
+  height: number;
+  deviceScaleFactor: (optional) number;
+  mobile: (optional) boolean;
+  fitWindow: (optional) boolean;
+```
+If `metrics` param is not specified or undefined in the above methods calls, then it defaults to: `DesktopScreenMetrics`, set as follows:
+
+```js
+{
+  width: 1920,
+  height: 1080,
+  deviceScaleFactor: 0,
+  mobile: false,
+  fitWindow: false
+}
+```
 
 
 
+---
 ## Web API Server
 A Web API Server is now included in the package in order to expose the lib as Microservice.
 

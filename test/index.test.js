@@ -5,11 +5,11 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 const { HandsfreeChrome } = require('../dist/index');
-const {BasicScreenMetrics} = require('../dist/screens');
+const { BasicScreenMetrics } = require('../dist/screens');
 
 
 describe('HandsfreeChrome', function () {
-  describe('#captureScreenshot(png default)', function () {
+  describe('#captureScreenshot (png default)', function () {
     let chrome;
     before('Instantiate HandsfreeChrome', function (done) {
       chrome = new HandsfreeChrome();
@@ -41,7 +41,23 @@ describe('HandsfreeChrome', function () {
       return filename;
     });
     it('should create one SMALLER png file for Genertel page', async function () {
-      let filename = await chrome.captureScreenshot('http://www.genertel.it', 'png', BasicScreenMetrics);
+      let filename = await chrome.captureScreenshot('https://www.nytimes.com', 'png', BasicScreenMetrics);
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });    
+    after('Close HandsfreeChrome ', function () {
+      return chrome.close();
+    });
+  });
+  describe('#captureScreenshot (generate THUMBNAIL)', function () {
+    let chrome;
+    before('Instantiate HandsfreeChrome', function (done) {
+      chrome = new HandsfreeChrome();
+      done();
+    });    
+    it('should create a 160x100 png of Genertel page', async function () {
+      let filename = await chrome.captureScreenshot('https://www.nytimes.com', 'png', BasicScreenMetrics, { width: 160, height: 100 });
       filename.should.be.ok;
       filename.length.should.be.above(1);
       return filename;
@@ -94,8 +110,8 @@ describe('HandsfreeChrome', function () {
       chrome = new HandsfreeChrome();
       done();
     });
-    it('should create two not empty files for CHROME page', async function () {
-      let filename = await chrome.captureScreenshot('https://www.chromestatus.com/');
+    it('should create on file for CHROME page', async function () {
+      let filename = await chrome.captureScreenshot('https://www.oracle.com/');
       filename.should.be.ok;
       filename.length.should.be.above(1);
       return filename;

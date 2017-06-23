@@ -3,8 +3,7 @@ export interface ScreenMetrics {
   height: number;
   deviceScaleFactor?: number;
   mobile?: boolean;
-  fitWindow?: boolean;
-  viewPortScale?: number;
+  fitWindow?: boolean;  
 };
 export const DesktopScreenMetrics: ScreenMetrics = {
   width: 1920,
