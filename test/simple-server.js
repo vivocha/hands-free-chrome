@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Hapi = require("hapi");
 const index_1 = require("../dist/index");
+const screens = require('../dist/screens');
 const Joi = require("joi");
 // Create a server with a host and port
 const server = new Hapi.Server();
@@ -13,8 +14,9 @@ const chrome = new index_1.HandsfreeChrome();
 const captureScreenshotHandler = async function (request, reply) {
     console.log('capture invoked with: ', request.payload);
     const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
-    const imgData = await chrome.captureScreenshotAsStream(request.payload.url, request.payload.type);
-    return reply(imgData).type(resType);
+    //const imgData = await chrome.captureScreenshotAsStream(request.payload.url, request.payload.type);
+    //return reply(imgData).type(resType);
+    return reply(chrome.captureScreenshotAsStream(request.payload.url, request.payload.type, screens.BasicScreenMetrics)).type(resType);
 };
 const captureConfig = {
     handler: captureScreenshotHandler,

@@ -3,13 +3,42 @@
 
 <head>
   <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+  <style>
+    input[type=text] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    input[type=button],
+    input[type=submit],
+    input[type=reset] {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      text-decoration: none;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
+  <form id="capture">
+    <fieldset>
+      <label for="url">URL</label>
+      <input id="url" type="text" name="url" autofocus>
+      <input type="button" name="submit" id="submit" value="Get Screenshot"  onclick="loadPNG()"/>
+    </fieldset>
+  </form>
+
   <div id='main'></div>
 
   <script>
-    function loadPNG(url) {
+    function loadPNG() {
+      const url = $('#url').val();
       const body = {
         url: url,
         type: 'png'
@@ -19,16 +48,11 @@
         //$('#main').html('<p>OK</p>');
         $('#main').html('<img src="data:image/png;base64,' + data + '"/>');
       })
-        .fail(function (q,text,error) {
-         console.log(text,error);
+        .fail(function (q, text, error) {
+          console.log(text, error);
         });
 
     };
-
-    $(document).ready(function () {
-      console.log('loading image...');
-      loadPNG('https://en.wikipedia.org/wiki/Node.js');
-    });
   </script>
 </body>
 

@@ -5,6 +5,7 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 const { HandsfreeChrome } = require('../dist/index');
+const {BasicScreenMetrics} = require('../dist/screens');
 
 
 describe('HandsfreeChrome', function () {
@@ -17,6 +18,30 @@ describe('HandsfreeChrome', function () {
 
     it('should create one not empty png file wikipedia JS page', async function () {
       let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript');
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    it('should create one SMALLER png file for wikipedia Sardegna page', async function () {
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/Sardegna', 'png', BasicScreenMetrics);
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    it('should create one SMALLER png file for Corriere page', async function () {
+      let filename = await chrome.captureScreenshot('http://www.corriere.it', 'png', BasicScreenMetrics);
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    it('should create one SMALLER png file for BBC page', async function () {
+      let filename = await chrome.captureScreenshot('http://www.bbc.com/sport', 'png', BasicScreenMetrics);
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      return filename;
+    });
+    it('should create one SMALLER png file for Genertel page', async function () {
+      let filename = await chrome.captureScreenshot('http://www.genertel.it', 'png', BasicScreenMetrics);
       filename.should.be.ok;
       filename.length.should.be.above(1);
       return filename;
