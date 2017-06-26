@@ -42,6 +42,7 @@
     "hapi": "^16.4.3",
     "joi": "^10.6.0",
     "lighthouse": "^2.1.0",
+    "make-dir": "^1.0.0",
     "md5": "^2.2.1",
     "sharp": "^0.18.1"
   },
@@ -58,6 +59,7 @@
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",
     "cz-conventional-changelog": "^2.0.0",
+    "find-up": "^2.1.0",
     "husky": "^0.13.4",
     "inert": "^4.2.0",
     "mocha": "^3.4.2",

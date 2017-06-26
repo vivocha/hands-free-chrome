@@ -1,12 +1,15 @@
 const chai = require('chai');
 const should = chai.should();
-var chaiAsPromised = require("chai-as-promised");
-
+const chaiAsPromised = require('chai-as-promised');
+const md5 = require('md5');
+const path = require('path');
 chai.use(chaiAsPromised);
 
 const { HandsfreeChrome } = require('../dist/index');
 const { BasicScreenMetrics } = require('../dist/screens');
+const findUp = require('find-up');
 
+const today = new Date().toISOString().split('T')[0];
 
 describe('HandsfreeChrome', function () {
   describe('#captureScreenshot (png default)', function () {
@@ -20,32 +23,50 @@ describe('HandsfreeChrome', function () {
       let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript');
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     it('should create one SMALLER png file for wikipedia Sardegna page', async function () {
-      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/Sardegna', 'png', BasicScreenMetrics);
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/Sardegna', { outputType: 'png', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     it('should create one SMALLER png file for Corriere page', async function () {
-      let filename = await chrome.captureScreenshot('http://www.corriere.it', 'png', BasicScreenMetrics);
+      let filename = await chrome.captureScreenshot('http://www.corriere.it', { outputType: 'png', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     it('should create one SMALLER png file for BBC page', async function () {
-      let filename = await chrome.captureScreenshot('http://www.bbc.com/sport', 'png', BasicScreenMetrics);
+      let filename = await chrome.captureScreenshot('http://www.bbc.com/sport', { outputType: 'png', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
-    it('should create one SMALLER png file for Genertel page', async function () {
-      let filename = await chrome.captureScreenshot('https://www.nytimes.com', 'png', BasicScreenMetrics);
+    it('should create one SMALLER png file for NY Times page', async function () {
+      let filename = await chrome.captureScreenshot('https://www.nytimes.com', { outputType: 'png', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
-    });    
+    });
+    it('should create one png file for NY Times page in a specified directory', async function () {
+      let filename = await chrome.captureScreenshot('https://www.nytimes.com', { outputType: 'png', outputDir: 'screenshots/another-dir', metrics: BasicScreenMetrics });
+      filename.should.be.ok;
+      filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots/another-dir', today, `${filename}.png`));
+      file.should.be.ok;
+      return filename;
+    });
     after('Close HandsfreeChrome ', function () {
       return chrome.close();
     });
@@ -55,11 +76,13 @@ describe('HandsfreeChrome', function () {
     before('Instantiate HandsfreeChrome', function (done) {
       chrome = new HandsfreeChrome();
       done();
-    });    
-    it('should create a 160x100 png of Genertel page', async function () {
-      let filename = await chrome.captureScreenshot('https://www.nytimes.com', 'png', BasicScreenMetrics, { width: 160, height: 100 });
+    });
+    it('should create a 160x100 png of NY Times page', async function () {
+      let filename = await chrome.captureScreenshot('https://www.nytimes.com', { outputType: 'png', metrics: BasicScreenMetrics, thumbnail: { width: 160, height: 100 } });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     after('Close HandsfreeChrome ', function () {
@@ -75,9 +98,11 @@ describe('HandsfreeChrome', function () {
     });
 
     it('should create one not empty pdf file wikipedia JS page', async function () {
-      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', 'pdf');
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', { outputType: 'pdf', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.pdf`));
+      file.should.be.ok;
       return filename;
     });
     after('Close HandsfreeChrome ', function () {
@@ -93,9 +118,13 @@ describe('HandsfreeChrome', function () {
     });
 
     it('should create two files wikipedia JS page', async function () {
-      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', 'both');
+      let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript', { outputType: 'both', metrics: BasicScreenMetrics });
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
+      const pdfFile = await findUp(path.join('screenshots', today, `${filename}.pdf`));
+      pdfFile.should.be.ok;
       return filename;
     });
     after('Close HandsfreeChrome ', function () {
@@ -114,13 +143,17 @@ describe('HandsfreeChrome', function () {
       let filename = await chrome.captureScreenshot('https://www.oracle.com/');
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
 
-    it('should create two not empty files for a http page', async function () {
+    it('should create one not empty file for a http page', async function () {
       let filename = await chrome.captureScreenshot('http://www.corriere.it');
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     after('Close HandsfreeChrome ', function () {
@@ -150,6 +183,8 @@ describe('HandsfreeChrome', function () {
       let filename = await chrome.captureScreenshot('https://it.wikipedia.org/wiki/JavaScript');
       filename.should.be.ok;
       filename.length.should.be.above(1);
+      const file = await findUp(path.join('screenshots', today, `${filename}.png`));
+      file.should.be.ok;
       return filename;
     });
     after('Close HandsfreeChrome ', function () {

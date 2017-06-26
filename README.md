@@ -11,6 +11,7 @@
 
 Current supported features:
 - capture screenshots of web pages, generating png and/or pdf files.
+- resize png screenshots to generate thumbnails
 
 
 
@@ -20,7 +21,7 @@ Current supported features:
 
 [Chrome version > 59.x](https://www.google.com/chrome/browser/desktop/index.html) must be installed.
 
-**Node.js version > 8.0.0**
+**Node.js version > 8.1.0**
 
 
 ---
@@ -58,27 +59,30 @@ Instantiate a new HandsFreeChrome.
 - `chromeFlags` -  array of strings, Headless Chrome configuration, default: `['--disable-gpu', '--headless']`;
 
 ---
-**`HandsfreeChrome # captureScreenshot(url, outputType, metrics, [thumbnail])`**
+**`HandsfreeChrome # captureScreenshot(url, [options])`**
 
 Capture a screenshot of a web page and create image files.
 
 Params:
 
 - `url` - string, a valid web page URL;
-- `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
-- `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below;
-- `thumbnail` - (optional) object `{ width: <px>, height: <px> }`, if used produces a resized png of the screenshot of the specified dimensions. Works only if `outputType` is `png`.
+- `options` - (optional) Object, screenshot configuration, with the following properties:
+    - `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
+    - `outputDir` - (optional) string, directory path to contain generated screenshots. Default is `<cwd>/screenshots`;
+    - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below;
+    - `thumbnail` - (optional) object `{ width: <px>, height: <px> }`, if used produces a resized png of the screenshot of the specified dimensions. Works only if `outputType` is `png`.
 
 ---
-**`HandsfreeChrome # captureScreenshotAsStream(url, outputType, metrics)`**
+**`HandsfreeChrome # captureScreenshotAsStream(url, [options])`**
 
 Capture a screenshot of a web page and return a data readable stream.
 
 Params:
 
 - `url` - string, a valid web page URL;
-- `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
-- `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
+- `options` - (optional) Object, screenshot configuration, with the following properties:
+    - `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
+    - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
 ---
 
 ### Metrics Object

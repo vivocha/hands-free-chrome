@@ -1,5 +1,6 @@
 import * as Hapi from 'hapi';
 import { HandsfreeChrome } from './index';
+import {ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics} from './screens';
 import * as Joi from 'joi';
 import * as debug from 'debug';
 
@@ -22,7 +23,7 @@ const captureScreenshotHandler = async function (request, reply) {
     try {
         debug('capture invoked');
         const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
-        const imgData = await chrome.captureScreenshotAsStream(request.payload.url, request.payload.type)
+        const imgData = await chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: BasicScreenMetrics})
         return reply(imgData).type(resType);
     } catch (error) {
         reply(error);

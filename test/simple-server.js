@@ -16,7 +16,7 @@ const captureScreenshotHandler = async function (request, reply) {
     const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
     //const imgData = await chrome.captureScreenshotAsStream(request.payload.url, request.payload.type);
     //return reply(imgData).type(resType);
-    return reply(chrome.captureScreenshotAsStream(request.payload.url, request.payload.type, screens.BasicScreenMetrics)).type(resType);
+    return reply(chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: screens.BasicScreenMetrics })).type(resType);
 };
 const captureConfig = {
     handler: captureScreenshotHandler,
