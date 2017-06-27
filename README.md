@@ -70,7 +70,7 @@ Params:
     - `outputType` - (optional) string, specifies the output file type, can be: `png` (default), `pdf` or `both`;
     - `outputDir` - (optional) string, directory path to contain generated screenshots. Default is `<cwd>/screenshots`;
     - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below;
-    - `thumbnail` - (optional) object `{ width: <px>, height: <px> }`, if used produces a resized png of the screenshot of the specified dimensions. Works only if `outputType` is `png`.
+    - `thumbnail` - (optional) object `{ width: <px>, height: <px> }`, if used produces a resized png of the screenshot of the specified dimensions. It works only if `outputType` is `png`.
 
 ---
 **`HandsfreeChrome # captureScreenshotAsStream(url, [options])`**
@@ -85,6 +85,16 @@ Params:
     - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
 ---
 
+**`HandsfreeChrome # resizePng(pngStream, [size])`**
+
+Resize a png image given its stream and a size.
+
+Params:
+
+- `pngStream` - Readable image stream;
+- `size` - (optional) object `{ width: <px>, height: <px> }`, the size of the required thumbnail. If not provided, default is: `{ width: 320, height: 200 }`.
+
+---
 ### Metrics Object
 
 Metrics Object specifies some configuration options for Headless Chrome, like the browser window size, mobile emulation and so on. See [Chrome DevTools Protocol page](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) for more info.
@@ -142,8 +152,9 @@ It returns a response with a base64 encoded stream body with `Content-Type` equa
 
 POST body must be a JSON object with the following properties:
 
-- `url`: string, complete URL of the page to capture;
+- `url`: (Required) string, complete URL of the page to capture;
 - `type`: (Optional) string, image type for the requested screenshot: `png` or `pdf` (default is `png`);
+- `thumbnail` - (optional) object in the form of `{ width: <px>, height: <px> }` to generate a thumbnail. If not provided a "full" screenshot is returned. It works only if `type` is `png`.
 
 Example:
 

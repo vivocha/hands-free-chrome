@@ -10,7 +10,7 @@ const lighthouse = require('lighthouse');
 const chrome = require('chrome-remote-interface');
 import * as makeDir from 'make-dir';
 const { Launcher } = require('lighthouse/chrome-launcher/chrome-launcher');
-import {ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics} from './screens';
+import { ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics } from './screens';
 
 const writeFile = util.promisify(fs.writeFile);
 
@@ -26,10 +26,10 @@ export interface Options {
 };
 export type OutType = 'png' | 'pdf';
 export type ExtOutType = OutType | 'both';
-export type Thumbnail = {width: number, height: number};
+export type Thumbnail = { width: number, height: number };
 export interface ScreenshotOptions {
   outputType: OutType,
-  metrics: ScreenMetrics 
+  metrics: ScreenMetrics
 };
 export interface ExtScreenshotOptions {
   outputType: ExtOutType,
@@ -69,26 +69,28 @@ export class HandsfreeChrome {
    * @returns {Promise} - resolved to filename string, in case of success.
    */
   async captureScreenshot(url: string, options: ExtScreenshotOptions = { outputType: 'png', outputDir: 'screenshots', metrics: DesktopScreenMetrics }): Promise<string> {
-    const filename = md5(url);    
+    const filename = md5(url);
     const today = new Date();
     const outPath = await makeDir(`${options.outputDir || 'screenshots'}/${today.toISOString().split('T')[0]}`);
     const absFilePath = path.join(outPath, filename);
     try {
       // screenshot -> png
-      if (options.outputType === 'png' || options.outputType === 'both') {       
+      if (options.outputType === 'png' || options.outputType === 'both') {
         const writeStream = fs.createWriteStream(`${absFilePath}.png`, { encoding: 'base64' });
-        const pngReadStream = await this.captureScreenshotAsStream(url, {outputType: 'png', metrics: options.metrics });
-        if(options.thumbnail) {
+        const pngReadStream = await this.captureScreenshotAsStream(url, { outputType: 'png', metrics: options.metrics });
+        if (options.thumbnail) {
+          /*
           const resizer = sharp();
           resizer.resize(options.thumbnail.width, options.thumbnail.height).png();
-          pngReadStream.pipe(resizer).pipe(writeStream);
+          */
+          (await this.resizePng(pngReadStream, options.thumbnail)).pipe(writeStream);
         }
-        else pngReadStream.pipe(writeStream);                
+        else pngReadStream.pipe(writeStream);
       }
       // screenshot -> pdf
       if (options.outputType === 'pdf' || options.outputType === 'both') {
         const writeStream = fs.createWriteStream(`${absFilePath}.pdf`, { encoding: 'base64' });
-        (await this.captureScreenshotAsStream(url, {outputType: 'pdf', metrics: options.metrics })).pipe(writeStream);
+        (await this.captureScreenshotAsStream(url, { outputType: 'pdf', metrics: options.metrics })).pipe(writeStream);
       }
       debug('all done.');
       return filename;
@@ -105,7 +107,7 @@ export class HandsfreeChrome {
    * @param {Object} metrics - screen metrics configuration for the screenshot 
    * @returns {Promise} - resolved to the screenshot data Stream, in case of success.
    */
-  async captureScreenshotAsStream(url: string, options: ScreenshotOptions = { outputType: 'png', metrics: DesktopScreenMetrics}): Promise<Readable> {
+  async captureScreenshotAsStream(url: string, options: ScreenshotOptions = { outputType: 'png', metrics: DesktopScreenMetrics }): Promise<Readable> {
     const stream: Readable = new Readable();
     try {
       if (!this.launcher.chrome) await this.launchChrome();
@@ -121,20 +123,20 @@ export class HandsfreeChrome {
       await Page.loadEventFired();
       await Promise.all([
         Emulation.setDeviceMetricsOverride(options.metrics),
-        Emulation.setVisibleSize({ width: options.metrics.width, height: options.metrics.height }),  
+        Emulation.setVisibleSize({ width: options.metrics.width, height: options.metrics.height }),
         Emulation.forceViewport({ x: 0, y: 0, scale: 1 }),
       ]);
-    
+
       // screenshot -> png
       if (options.outputType === 'png') {
         let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
-        stream.push(data/*.split(';base64,').pop()*/, 'base64');
+        stream.push(data, 'base64');
         stream.push(null);
       }
       // screenshot -> pdf
       else if (options.outputType === 'pdf') {
         const { data: pdf } = await Page.printToPDF();
-        stream.push(pdf/*.split(';base64,').pop()*/, 'base64');
+        stream.push(pdf, 'base64');
         stream.push(null);
       }
       debug('all done.');
@@ -143,6 +145,14 @@ export class HandsfreeChrome {
       debug(err);
       throw err;
     }
+  };
+  /**
+   * Resize a PNG image given its Stream
+   */
+  async resizePng(pngStream: Readable, size: Thumbnail = {width: 320, height: 200}): Promise<Readable> {
+      const resizer = sharp();
+      resizer.resize(size.width, size.height).png();
+      return pngStream.pipe(resizer);   
   };
   /**
    * Closes connections to Chrome and kills the launched Chrome process

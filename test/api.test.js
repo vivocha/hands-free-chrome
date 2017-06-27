@@ -35,6 +35,22 @@ describe('Test API', function () {
           }
         });
     });
+    it('for a valid URL and a THUMBNAIL request should return 200 OK with an image/png data stream', function (done) {
+      request(server.listener)
+        .post('/screenshots/actions/capture')
+        .send({ url: 'https://www.vodafone.com', thumbnail: {width: 320, height: 200 } })
+        .expect(200)
+        .expect('Content-Type', /png/)
+        .buffer()
+        .parse(binaryParser)
+        .end(function (err, res) {
+          if (err) done(err);
+          else {
+            res.body.should.be.ok;
+            done();
+          }
+        });
+    });
     it.skip('for a not valid URL should return an error', function (done) {
       request(server.listener)
         .post('/screenshots/actions/capture')

@@ -14,8 +14,6 @@ const chrome = new index_1.HandsfreeChrome();
 const captureScreenshotHandler = async function (request, reply) {
     console.log('capture invoked with: ', request.payload);
     const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
-    //const imgData = await chrome.captureScreenshotAsStream(request.payload.url, request.payload.type);
-    //return reply(imgData).type(resType);
     return reply(chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: screens.BasicScreenMetrics })).type(resType);
 };
 const captureConfig = {
@@ -26,7 +24,7 @@ const captureConfig = {
                 scheme: [
                     'http', 'https'
                 ]
-            }),
+            }).required(),
             type: Joi.string().default('png').valid('png', 'pdf')
         }
     }

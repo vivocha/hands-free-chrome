@@ -1,13 +1,12 @@
 import * as Hapi from 'hapi';
 import { HandsfreeChrome } from './index';
-import {ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics} from './screens';
+import { ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics } from './screens';
 import * as Joi from 'joi';
 import * as debug from 'debug';
 
 // Create a server with a host and port
 export const server = new Hapi.Server();
 server.connection({
-    host: 'localhost',
     port: process.env.PORT || 8000
 });
 
@@ -23,8 +22,9 @@ const captureScreenshotHandler = async function (request, reply) {
     try {
         debug('capture invoked');
         const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
-        const imgData = await chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: BasicScreenMetrics})
-        return reply(imgData).type(resType);
+        const imgData = await chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: BasicScreenMetrics })
+        if (request.payload.thumbnail) return reply(chrome.resizePng(imgData, request.payload.thumbnail)).type(resType);
+        else return reply(imgData).type(resType);
     } catch (error) {
         reply(error);
     }
@@ -36,8 +36,12 @@ const captureConfig = {
         payload: {
             url: Joi.string().uri({
                 scheme: ['http', 'https']
-            }),
-            type: Joi.string().default('png').valid('png', 'pdf')
+            }).required(),
+            type: Joi.string().default('png').valid('png', 'pdf'),
+            thumbnail: Joi.object().keys({
+                width: Joi.number(),
+                height: Joi.number()
+            })
         }
     }
 }
