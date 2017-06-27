@@ -167,6 +167,26 @@ Example:
 
 ---
 
+# Docker
+
+Thanks to the provided `Dockerfile` it is possible to run this component + API server as a Microservice, exposing the Web API endopoints listed above.
+
+In order to "dockerize" the microservice, from the project root directory:
+
+1. build the image: 
+
+```sh
+$ docker build -t vvc/hfchrome .
+```
+
+2. run the container (as default, API server is configured to listen at port 8000, see `Dockerfile`):
+
+```sh
+$ docker run --name hfc -p 8000:8000 -d --security-opt seccomp:./chrome.json vvc/hfchrome
+```
+
+---
+
 License - "MIT License"
 -----------------------
 
