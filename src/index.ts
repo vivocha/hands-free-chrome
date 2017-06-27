@@ -64,6 +64,7 @@ export class HandsfreeChrome {
    * It can generate two files: a png image and|or a pdf document.
    * @param {string} url - complete URL of the webpage to take a screenshot
    * @param {string} outputType - file format for the ouput file, can be 'png', 'pdf' or 'both'
+   * @param {string} outputDir - path of the output directory
    * @param {Object} metrics - screen metrics configuration for the screenshot 
    * @param {Object} thumbnail - optional, an Object with width, height properties (in pixels). If specified, resizes the png image to width x height size.
    * @returns {Promise} - resolved to filename string, in case of success.
@@ -148,6 +149,8 @@ export class HandsfreeChrome {
   };
   /**
    * Resize a PNG image given its Stream
+   * @param {Readable} pngStream - png image stream
+   * @returns {Promise} - resolved to the thumbnail data Stream, in case of success.
    */
   async resizePng(pngStream: Readable, size: Thumbnail = {width: 320, height: 200}): Promise<Readable> {
       const resizer = sharp();
