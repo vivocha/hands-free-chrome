@@ -165,6 +165,29 @@ Example:
 }
 ```
 
+
+**GET /screenshots/{url}[?thumbnail=width,height]**
+
+Gets a screenshot thumbnail for the specified `url` path parameter.
+It returns a response with a base64 encoded stream body with `Content-Type` equal to `image/png`. The thumbnail will have the size 
+specified by the `thumbnail` query param.
+
+Path parameter is:
+
+- `url` - (required) string, complete **URL percent-encoding** URL of the page to capture;
+
+Query parameter is:
+
+- `thumbnail` - (optional) string in the form of `width,heigth` to generate a thumbnail of the specifies size. If not provided default is `160,100`.
+
+Example:
+
+```sh
+curl --request GET \
+  --url 'http://<your-server>/screenshots/http%3A%2F%2Fwww.corriere.it?thumbnail=160%2C100' \
+  --header 'content-type: application/json'
+```
+
 ---
 
 # Docker

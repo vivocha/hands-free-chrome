@@ -18,6 +18,7 @@ const hfcOptions = {
 
 const chrome = new HandsfreeChrome(hfcOptions);
 
+// POST handler
 const captureScreenshotHandler = async function (request, reply) {
     try {
         debug('capture invoked');
@@ -29,7 +30,7 @@ const captureScreenshotHandler = async function (request, reply) {
         reply(error);
     }
 };
-
+// POST config 
 const captureConfig = {
     handler: captureScreenshotHandler,
     validate: {
@@ -45,18 +46,54 @@ const captureConfig = {
         }
     }
 }
-// Add the route for the captureScreenshot API endpoint
+
+// GET handler
+const captureThumbnailHandler = async function (request, reply) {
+    try {
+        debug('capture invoked');
+        const resType = 'image/png';
+        const imgData = await chrome.captureScreenshotAsStream(request.params.url, { outputType: 'png', metrics: BasicScreenMetrics })
+        if (request.query.thumbnail) {
+            const [width, height] = request.query.thumbnail.split(",").map(v => parseInt(v));
+            return reply(chrome.resizePng(imgData, { width, height })).type(resType);
+        }
+        else return reply(imgData).type(resType);
+    } catch (error) {
+        reply(error);
+    }
+};
+
+// POST endpoint
 server.route({
     method: 'POST',
     path: '/screenshots/actions/capture',
     config: captureConfig
 });
 
+// GET configuration
+const thumbnailConfig = {
+    handler: captureThumbnailHandler,
+    validate: {
+        params: {
+            url: Joi.string().uri({
+                scheme: ['http', 'https']
+            }).required()
+        },
+        query: {
+            thumbnail: Joi.string().default('160,100')
+        }
+    }
+}
+// GET endpoint
+server.route({
+    method: 'GET',
+    path: '/screenshots/{url}',
+    config: thumbnailConfig
+});
 
 server.on('stop', function () {
     console.log('closing server');
 });
-
 // Start the server
 server.start((err) => {
     if (err) {

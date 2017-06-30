@@ -80,10 +80,6 @@ export class HandsfreeChrome {
         const writeStream = fs.createWriteStream(`${absFilePath}.png`, { encoding: 'base64' });
         const pngReadStream = await this.captureScreenshotAsStream(url, { outputType: 'png', metrics: options.metrics });
         if (options.thumbnail) {
-          /*
-          const resizer = sharp();
-          resizer.resize(options.thumbnail.width, options.thumbnail.height).png();
-          */
           (await this.resizePng(pngReadStream, options.thumbnail)).pipe(writeStream);
         }
         else pngReadStream.pipe(writeStream);

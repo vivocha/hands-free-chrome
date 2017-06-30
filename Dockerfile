@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y curl wget python make g++ && apt-get -y
 # nvm environment variables
 ENV NVM_DIR /usr/local/nvm
 # change Node.js versione here, if required
-ENV NODE_VERSION 8.1.2
+ENV NODE_VERSION 8.1.3
 
 # install nvm
 # https://github.com/creationix/nvm#install-script

@@ -3,6 +3,7 @@ const should = chai.should();
 const Hapi = require('hapi');
 const request = require('supertest')
 const api = require('../dist/api');
+const querystring = require('querystring');
 const server = api.server;
 
 
@@ -18,7 +19,8 @@ describe('Test API', function () {
     });
   }
 
-  describe('Calling /screenshots/actions/capture for a PNG', function () {
+  // POST
+  describe('Calling POST /screenshots/actions/capture for a PNG', function () {
     it('for a valid URL should return 200 OK with an image/png data stream', function (done) {
       request(server.listener)
         .post('/screenshots/actions/capture')
@@ -92,13 +94,60 @@ describe('Test API', function () {
           }
         });      
     });  
-    
-    after('close server', async function () {
-      return await api.stop();
     });
+
+  // GET  
+  describe('Calling GET /screenshots/{url}', function () {
+    it('for a valid URL should return 200 OK with an image/png data stream', function (done) {
+      const url = `/screenshots/${querystring.escape('https://en.wikipedia.org/wiki/Software_bug')}`;
+      request(server.listener)
+        .get(url)
+        .expect(200)
+        .expect('Content-Type', /png/)
+        .buffer()
+        .parse(binaryParser)
+        .end(function (err, res) {
+          if (err) done(err);
+          else {
+            res.body.should.be.ok;
+            done();
+          }
+        });
+    });
+    it('for a valid URL request should return 200 OK with an image/png data stream', function (done) {
+      const url = 'https://www.vodafone.com';
+      request(server.listener)
+        .get(`/screenshots/${querystring.escape(url)}?thumbnail=160,100`)
+        .expect(200)
+        .expect('Content-Type', /png/)
+        .buffer()
+        .parse(binaryParser)
+        .end(function (err, res) {
+          if (err) done(err);
+          else {
+            res.body.should.be.ok;
+            done();
+          }
+        });
+    });
+    it.skip('for a not valid URL should return an error', function (done) {
+      const url = 'https://en.vvc.en.vvc';
+      request(server.listener)
+        .get(`/screenshots/${encodeURI(url)}?thumbnail=160,100`)
+        .expect(500)
+        .end(function (err, res) {
+          if (err) done(err);
+          else {            
+            done();
+          }
+        });      
+    });    
+  }); 
+  after('close server', async function () {
+      return await api.stop();
   });
- 
 });
+
 
 
 
