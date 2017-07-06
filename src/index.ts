@@ -49,12 +49,31 @@ export class HandsfreeChrome {
   /**
    * Launches Chrome, if not already started.
    */
-  private async launchChrome() {
+  async launchChrome() {
     try {
-      return await this.launcher.launch();
+      await this.launcher.launch();
+      if (!this.protocol) {
+        let connected = false;
+        let attempts = 10;
+        while (!connected && attempts > 0)
+          try {
+            this.protocol = await chrome({ port: this.options.port || 9222 });
+            connected = true;
+          } catch (err) {
+            debug('not connected');
+            debug('error');
+            attempts -= 1;
+            await new Promise((resolve, reject) => {
+              setTimeout(() => resolve(), 1000);
+            });
+          }
+        if (attempts === 0) throw new Error('Unable to connect to a Headless Chrome instance');
+        await Promise.all([
+          this.protocol.Page.enable()
+        ]);
+      }
     } catch (error) {
       debug('launchChrome() Error', error);
-      await this.launcher.kill();
       throw error;
     }
   }
@@ -107,15 +126,8 @@ export class HandsfreeChrome {
   async captureScreenshotAsStream(url: string, options: ScreenshotOptions = { outputType: 'png', metrics: DesktopScreenMetrics }): Promise<Readable> {
     const stream: Readable = new Readable();
     try {
-      if (!this.launcher.chrome) await this.launchChrome();
-      if (!this.protocol) {
-        this.protocol = await chrome({ port: this.options.port || 9222 });
-        await Promise.all([
-          this.protocol.Page.enable()
-        ]);
-      }
+      if (!this.launcher.pid) await this.launchChrome();
       const { Page, Emulation } = this.protocol;
-
       await Page.navigate({ url: url });
       await Page.loadEventFired();
       await Promise.all([
@@ -144,14 +156,62 @@ export class HandsfreeChrome {
     }
   };
   /**
+   * Captures a screenshot of the page at specified URL opening a new Chrome Tab
+   * It returns a Promise fulfilled with a readable stream
+   * @param {string} url - complete URL of the webpage to take a screenshot
+   * @param {string} outputType - image type for the data stream, can be 'png' or 'pdf'
+   * @param {Object} metrics - screen metrics configuration for the screenshot 
+   * @returns {Promise} - resolved to the screenshot data Stream, in case of success.
+   */
+  async captureScreenshotAsStreamByTab(url: string, options: ScreenshotOptions = { outputType: 'png', metrics: DesktopScreenMetrics }): Promise<Readable> {
+    const stream: Readable = new Readable();
+    try {
+      if (!this.launcher.pid) await this.launchChrome();
+      const target = await chrome.New({ port: this.options.port || 9222 });
+      const tab = await chrome({port: this.options.port || 9222, target });
+      debug('tab opened');
+      const tabId = tab.target.id;
+      const { Page, Emulation } = tab;
+
+      await Promise.all([
+        Page.enable(),
+        Emulation.setDeviceMetricsOverride(options.metrics),
+        Emulation.setVisibleSize({ width: options.metrics.width, height: options.metrics.height }),
+        Emulation.forceViewport({ x: 0, y: 0, scale: 1 }),
+      ]);
+      await Page.navigate({ url: url });
+      await Page.loadEventFired();
+
+
+      // screenshot -> png
+      if (options.outputType === 'png') {
+        let { data } = await Page.captureScreenshot({ format: 'png', fromSurface: true });
+        stream.push(data, 'base64');
+        stream.push(null);
+      }
+      // screenshot -> pdf
+      else if (options.outputType === 'pdf') {
+        const { data: pdf } = await Page.printToPDF();
+        stream.push(pdf, 'base64');
+        stream.push(null);
+      }
+      debug('All done. Closing Tab.');
+      const closed = chrome.Close({ id: tabId });
+      return stream;
+    } catch (err) {
+      debug(err);
+      throw err;
+    }
+  };
+  /**
    * Resize a PNG image given its Stream
    * @param {Readable} pngStream - png image stream
    * @returns {Promise} - resolved to the thumbnail data Stream, in case of success.
    */
-  async resizePng(pngStream: Readable, size: Thumbnail = {width: 320, height: 200}): Promise<Readable> {
-      const resizer = sharp();
-      resizer.resize(size.width, size.height).png();
-      return pngStream.pipe(resizer);   
+  async resizePng(pngStream: Readable, size: Thumbnail = { width: 320, height: 200 }): Promise<Readable> {
+    const resizer = sharp();
+    resizer.resize(size.width, size.height).png();
+    return pngStream.pipe(resizer);
   };
   /**
    * Closes connections to Chrome and kills the launched Chrome process

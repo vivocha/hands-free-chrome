@@ -9,9 +9,11 @@
 [![npm version](https://img.shields.io/npm/v/hands-free-chrome.svg)](https://www.npmjs.com/package/hands-free-chrome)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-Current supported features:
-- capture screenshots of web pages, generating png and/or pdf files.
+Current included features:
+- capture screenshots of web pages, generating png and/or pdf files
 - resize png screenshots to generate thumbnails
+- run as Microservice using Docker (Dockerfile included)
+- Web API
 
 
 
@@ -84,6 +86,23 @@ Params:
     - `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
     - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
 ---
+
+
+**`HandsfreeChrome # captureScreenshotAsStreamByTab(url, [options])`**
+
+Capture a screenshot of a web page *opening and closing a new browser tab* and return a data readable stream.
+
+**WARNING**: due to a [known bug](https://bugs.chromium.org/p/chromium/issues/detail?id=713268) of Chrome 59 on macOS closing tabs doesn't work properly on that platform. To use this method please use Linux or Docker ;)
+
+Params:
+
+- `url` - string, a valid web page URL;
+- `options` - (optional) Object, screenshot configuration, with the following properties:
+    - `outputType` - (optional) string, specifies the image file type, can be: `png` (default) or `pdf`;
+    - `metrics` - object, screen metric properties, defaults to `DesktopScreenMetrics`, see the dedicated section below.
+---
+
+
 
 **`HandsfreeChrome # resizePng(pngStream, [size])`**
 
@@ -205,8 +224,26 @@ $ docker build -t vvc/hfchrome .
 2. run the container (as default, API server is configured to listen at port 8000, see `Dockerfile`):
 
 ```sh
-$ docker run --name hfc -p 8000:8000 -d --security-opt seccomp:./chrome.json vvc/hfchrome
+$ docker run --name hfc -p 8000:8000 -d --privileged vvc/hfchrome
 ```
+
+---
+# Docker Compose
+
+This project also includes a Docker Compose configuration in order to launch a composition of 3 microservices, as follows:
+
+- **two Hands-free Chrome** nodes (hfc1, hfc2) to capture screenshots;
+- **one NGINX** instance (hfc-nginx-lb) to act as a load balancer between the two nodes; it is also configured to cache images in order to avoid performing the same screenshot capture tasks in a given time window (see `nginx/nginx.conf` file).
+
+To execute composed services, run the following commands in the project root directory:
+
+```sh
+$ docker-compose build
+$ docker-compose up -d
+```
+
+NGINX is configured to listen at port 8000, exposed APIs are the same as described above.
+
 
 ---
 

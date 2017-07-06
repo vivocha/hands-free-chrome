@@ -43,11 +43,14 @@ RUN npm -v
 COPY . /usr/src/app
 RUN rm -rf node_modules && npm i
 
+# install pm2
+RUN npm install pm2 -g
+
 # Run API server, change exposed port and PORT env var if required
 EXPOSE 8000
 ENV NODE_ENV production 
 ENV PORT 8000 
-CMD [ "node", "./dist/api" ]
+CMD [ "pm2-docker", "./dist/api.js" ]
 
 
 

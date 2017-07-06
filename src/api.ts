@@ -2,7 +2,9 @@ import * as Hapi from 'hapi';
 import { HandsfreeChrome } from './index';
 import { ScreenMetrics, DesktopScreenMetrics, BasicScreenMetrics } from './screens';
 import * as Joi from 'joi';
-import * as debug from 'debug';
+import * as dbg from 'debug';
+
+const debug = dbg('HFC:API');
 
 // Create a server with a host and port
 export const server = new Hapi.Server();
@@ -17,16 +19,18 @@ const hfcOptions = {
 };
 
 const chrome = new HandsfreeChrome(hfcOptions);
+chrome.launchChrome();
 
 // POST handler
 const captureScreenshotHandler = async function (request, reply) {
     try {
         debug('capture invoked');
         const resType = request.payload.type === 'pdf' ? 'application/pdf' : 'image/png';
-        const imgData = await chrome.captureScreenshotAsStream(request.payload.url, { outputType: request.payload.type, metrics: BasicScreenMetrics })
+        const imgData = await chrome.captureScreenshotAsStreamByTab(request.payload.url, { outputType: request.payload.type, metrics: BasicScreenMetrics })
         if (request.payload.thumbnail) return reply(chrome.resizePng(imgData, request.payload.thumbnail)).type(resType);
         else return reply(imgData).type(resType);
     } catch (error) {
+        debug(error);
         reply(error);
     }
 };
@@ -52,13 +56,14 @@ const captureThumbnailHandler = async function (request, reply) {
     try {
         debug('capture invoked');
         const resType = 'image/png';
-        const imgData = await chrome.captureScreenshotAsStream(request.params.url, { outputType: 'png', metrics: BasicScreenMetrics })
+        const imgData = await chrome.captureScreenshotAsStreamByTab(request.params.url, { outputType: 'png', metrics: BasicScreenMetrics })
         if (request.query.thumbnail) {
             const [width, height] = request.query.thumbnail.split(",").map(v => parseInt(v));
             return reply(chrome.resizePng(imgData, { width, height })).type(resType);
         }
         else return reply(imgData).type(resType);
     } catch (error) {
+        debug(error);
         reply(error);
     }
 };
@@ -97,6 +102,7 @@ server.on('stop', function () {
 // Start the server
 server.start((err) => {
     if (err) {
+        debug(err);
         throw err;
     }
     else {

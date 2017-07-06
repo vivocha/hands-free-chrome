@@ -30,23 +30,40 @@
     <fieldset>
       <label for="url">URL</label>
       <input id="url" type="text" name="url" autofocus>
-      <input type="button" name="submit" id="submit" value="Get Screenshot"  onclick="loadPNG()"/>
+      <input type="button" name="submit" id="submit" value="Get Screenshot" onclick="loadImages()" />
     </fieldset>
   </form>
 
-  <div id='main'></div>
+  <img src="http://localhost:8000/screenshots/http%3A%2F%2Fwww.corriere.it?thumbnail=160,100" />
+  <div id='thumb'></div>
+  <div id='thumb2'></div>
 
   <script>
+    function loadImages() {
+      loadPNG();
+      getThumbnail();
+    }
     function loadPNG() {
       const url = $('#url').val();
       const body = {
         url: url,
-        type: 'png'
+        type: 'png',
+        thumbnail: { width: 160, height: 100 }
       };
       $.post('/screenshots/actions/capture', body, (data, status) => {
         console.log('Status:', status);
-        //$('#main').html('<p>OK</p>');
-        $('#main').html('<img src="data:image/png;base64,' + data + '"/>');
+        $('#thumb').html('<img src="data:image/png;base64,' + data + '"/>');
+      })
+        .fail(function (q, text, error) {
+          console.log(text, error);
+        });
+
+    };
+    function getThumbnail() {
+      const url = $('#url').val();
+      $.get('/screenshots/' + encodeURIComponent(url) + '?thumbnail=160,100', (data, status) => {
+        console.log('Status:', status);
+        $('#thumb2').html('<img src="data:image/png;base64,' + data + '"></img>');
       })
         .fail(function (q, text, error) {
           console.log(text, error);

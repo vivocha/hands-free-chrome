@@ -41,10 +41,10 @@
     "debug": "^2.6.8",
     "hapi": "^16.4.3",
     "joi": "^10.6.0",
-    "lighthouse": "^2.1.0",
+    "lighthouse": "^2.2.1",
     "make-dir": "^1.0.0",
     "md5": "^2.2.1",
-    "sharp": "^0.18.1"
+    "sharp": "^0.18.2"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
@@ -52,22 +52,23 @@
     "@types/joi": "^10.4.0",
     "@types/md5": "^2.1.32",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.3",
+    "@types/node": "^8.0.7",
     "@types/sharp": "^0.17.2",
+    "async": "^2.5.0",
     "chai": "^4.0.2",
-    "chai-as-promised": "^7.0.0",
+    "chai-as-promised": "^7.1.0",
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",
     "cz-conventional-changelog": "^2.0.0",
     "find-up": "^2.1.0",
-    "husky": "^0.14.1",
+    "husky": "^0.14.2",
     "inert": "^4.2.0",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
     "rimraf": "^2.6.1",
     "semantic-release": "^6.3.6",
     "supertest": "^3.0.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.4.1"
   },
   "config": {
     "commitizen": {
