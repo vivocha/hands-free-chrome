@@ -156,7 +156,7 @@ export class HandsfreeChrome {
     }
   };
   /**
-   * Captures a screenshot of the page at specified URL opening a new Chrome Tab
+   * Captures a screenshot of the page at specified URL opening (and then closing) a new Chrome Tab
    * It returns a Promise fulfilled with a readable stream
    * @param {string} url - complete URL of the webpage to take a screenshot
    * @param {string} outputType - image type for the data stream, can be 'png' or 'pdf'

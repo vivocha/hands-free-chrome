@@ -1,3 +1,5 @@
+// Display Metrics configuration for Screenshots Capture
+
 export interface ScreenMetrics {
   width: number;
   height: number;
@@ -5,6 +7,7 @@ export interface ScreenMetrics {
   mobile?: boolean;
   fitWindow?: boolean;  
 };
+// Desktop
 export const DesktopScreenMetrics: ScreenMetrics = {
   width: 1920,
   height: 1080,
@@ -12,6 +15,7 @@ export const DesktopScreenMetrics: ScreenMetrics = {
   mobile: false,
   fitWindow: false
 };
+// Basic screen
 export const BasicScreenMetrics: ScreenMetrics = {
   width: 1280,
   height: 800,

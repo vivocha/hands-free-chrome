@@ -6,7 +6,7 @@ import * as dbg from 'debug';
 
 const debug = dbg('HFC:API');
 
-// Create a server with a host and port
+// Create API Server
 export const server = new Hapi.Server();
 server.connection({
     port: process.env.PORT || 8000
