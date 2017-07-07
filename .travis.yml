@@ -14,12 +14,8 @@ notifications:
   email: false
 node_js:
   - '8'
-before_install:  
-  - npm i -g npm@^5.0.0
-  - npm i -g typescript
-  - npm i -g nyc
+before_install:
   - mkdir temp
-  - npm i
 before_script:
   - npm prune
 script:
