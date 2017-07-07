@@ -19,6 +19,7 @@ before_install:
   - npm i -g typescript
   - npm i -g nyc
   - mkdir temp
+  - npm i
 before_script:
   - npm prune
 script:
