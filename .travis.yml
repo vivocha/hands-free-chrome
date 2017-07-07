@@ -4,9 +4,7 @@ group: edge
 language: node_js
 addons:
   chrome: stable
-cache:
-  directories:
-    - node_modules
+
 branches:
   only:
     - master
