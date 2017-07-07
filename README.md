@@ -23,6 +23,8 @@ Current included features:
 
 [Chrome version > 59.x](https://www.google.com/chrome/browser/desktop/index.html) must be installed.
 
+**WARNING**: due to a [known bug](https://bugs.chromium.org/p/chromium/issues/detail?id=713268) of Chrome 59 on macOS closing tabs doesn't work properly on that platform. See API documentation below for more info.
+
 **Node.js version > 8.1.0**
 
 
