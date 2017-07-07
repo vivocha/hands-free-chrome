@@ -61,7 +61,6 @@ export class HandsfreeChrome {
             connected = true;
           } catch (err) {
             debug('not connected');
-            debug('error', err);
             attempts -= 1;
             await new Promise((resolve, reject) => {
               setTimeout(() => resolve(), 1000);

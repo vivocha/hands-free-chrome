@@ -68,6 +68,13 @@ const captureThumbnailHandler = async function (request, reply) {
     }
 };
 
+// POST endpoint
+server.route({
+    method: 'POST',
+    path: '/screenshots/actions/capture',
+    config: captureConfig
+});
+
 // GET configuration
 const thumbnailConfig = {
     handler: captureThumbnailHandler,
@@ -82,15 +89,6 @@ const thumbnailConfig = {
         }
     }
 }
-
-// POST endpoint
-server.route({
-    method: 'POST',
-    path: '/screenshots/actions/capture',
-    config: captureConfig
-});
-
-
 // GET endpoint
 server.route({
     method: 'GET',
@@ -104,7 +102,7 @@ server.on('stop', function () {
 // Start the server
 server.start((err) => {
     if (err) {
-        console.log(err);
+        debug(err);
         throw err;
     }
     else {
