@@ -234,6 +234,8 @@ $ docker run --name hfc -p 8000:8000 -d --privileged vvc/hfchrome
 
 This project also includes a Docker Compose configuration in order to launch a composition of 3 microservices, as follows:
 
+![Docker Microservices](https://github.com/vivocha/hands-free-chrome/blob/master/assets/img/hfc-ms.png)
+
 - **two Hands-free Chrome** nodes (hfc1, hfc2) to capture screenshots;
 - **one NGINX** instance (hfc-nginx-lb) to act as a load balancer between the two nodes; it is also configured to cache images in order to avoid performing the same screenshot capture tasks in a given time window (see `nginx/nginx.conf` file).
 
