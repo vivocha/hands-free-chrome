@@ -37,7 +37,7 @@
     ".npmrc"
   ],
   "dependencies": {
-    "chrome-remote-interface": "^0.24.2",
+    "chrome-remote-interface": "^0.25.3",
     "debug": "^2.6.8",
     "hapi": "^16.4.3",
     "joi": "^10.6.0",
