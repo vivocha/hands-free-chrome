@@ -39,8 +39,8 @@
   "dependencies": {
     "chrome-remote-interface": "^0.24.2",
     "debug": "^2.6.8",
-    "hapi": "^16.4.3",
-    "joi": "^10.6.0",
+    "hapi": "^17.0.0",
+    "joi": "^13.0.0",
     "lighthouse": "^2.2.1",
     "make-dir": "^1.0.0",
     "md5": "^2.2.1",
