@@ -38,7 +38,7 @@
   ],
   "dependencies": {
     "chrome-remote-interface": "^0.24.2",
-    "debug": "^2.6.8",
+    "debug": "^2.6.9",
     "hapi": "^16.4.3",
     "joi": "^10.6.0",
     "lighthouse": "^2.2.1",
